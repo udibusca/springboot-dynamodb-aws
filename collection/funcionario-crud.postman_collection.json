@@ -1,0 +1,73 @@
+{
+	"variables": [],
+	"info": {
+		"name": "funcionario-crud",
+		"_postman_id": "84f66ff5-eea5-326a-015f-dabdb658fd8f",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Criar",
+			"request": {
+				"url": "localhost:8080/v1/funcionario",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"funcionarioId\": \"98512\",\r\n    \"nome\": \"Natasha Martins\",\r\n    \"departamento\": {\r\n        \"nome\": \"TI\",\r\n        \"codigo\": \"2\"\r\n    }\r\n}\r\n"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Listar",
+			"request": {
+				"url": "localhost:8080/v1/funcionario",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Atualizar",
+			"request": {
+				"url": "localhost:8080/v1/funcionario/45332",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\n        \"funcionarioId\": \"45332\",\n        \"nome\": \"Maria Silva Souza\",\n        \"departamento\": {\n            \"nome\": \"TI\",\n            \"codigo\": \"2\"\n        }\n    }"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Deletar",
+			"request": {
+				"url": "localhost:8080/v1/funcionario/45332",
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}

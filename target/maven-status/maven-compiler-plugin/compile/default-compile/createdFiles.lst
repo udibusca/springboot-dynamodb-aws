@@ -1,0 +1,6 @@
+com\alca\dynamodb\dynamodbcrudaws\repository\FuncionarioRepository.class
+com\alca\dynamodb\dynamodbcrudaws\config\DynamoDbConfiguration.class
+com\alca\dynamodb\dynamodbcrudaws\DynamodbcrudAwsApplication.class
+com\alca\dynamodb\dynamodbcrudaws\entity\Departamento.class
+com\alca\dynamodb\dynamodbcrudaws\controller\FuncionarioController.class
+com\alca\dynamodb\dynamodbcrudaws\entity\Funcionario.class
