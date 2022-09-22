@@ -1,4 +1,4 @@
-package com.alca.dynamodb.dynamodbcrudaws.config;
+package com.alca.dynamodb.dynamodbcrudaws.infrastructure.adapters.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;

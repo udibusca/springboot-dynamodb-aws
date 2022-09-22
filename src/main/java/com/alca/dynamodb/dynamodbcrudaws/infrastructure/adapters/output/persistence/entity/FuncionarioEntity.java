@@ -1,4 +1,4 @@
-package com.alca.dynamodb.dynamodbcrudaws.entity;
+package com.alca.dynamodb.dynamodbcrudaws.infrastructure.adapters.output.persistence.entity;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamoDBTable(tableName = "funcionario")
-public class Funcionario {
+public class FuncionarioEntity {
 
   @DynamoDBHashKey
   private String funcionarioId;
@@ -21,7 +21,12 @@ public class Funcionario {
   private String nome;
 
   @DynamoDBAttribute
-  @DynamoDBTypeConvertedJson(targetType = Departamento.class)
-  private Departamento departamento;
+  @DynamoDBTypeConvertedJson(targetType = DepartamentoEntity.class)
+  private DepartamentoEntity departamento;
 
+  public FuncionarioEntity(String funcionarioId, FuncionarioEntity funcionario) {
+    this.funcionarioId = funcionarioId;
+    this.nome = funcionario.getNome();
+    this.departamento = funcionario.getDepartamento();
+  }
 }

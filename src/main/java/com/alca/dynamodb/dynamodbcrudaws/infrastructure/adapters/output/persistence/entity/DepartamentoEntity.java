@@ -1,4 +1,4 @@
-package com.alca.dynamodb.dynamodbcrudaws.entity;
+package com.alca.dynamodb.dynamodbcrudaws.infrastructure.adapters.output.persistence.entity;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @DynamoDBDocument
 @NoArgsConstructor
 @AllArgsConstructor
-public class Departamento {
+public class DepartamentoEntity {
 
   @DynamoDBAttribute
   private String nome;
