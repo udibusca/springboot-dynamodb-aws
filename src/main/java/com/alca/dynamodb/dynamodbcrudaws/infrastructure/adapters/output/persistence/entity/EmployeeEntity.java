@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamoDBTable(tableName = "funcionario")
-public class FuncionarioEntity {
+public class EmployeeEntity {
 
   @DynamoDBHashKey
   private String funcionarioId;
@@ -22,11 +22,11 @@ public class FuncionarioEntity {
 
   @DynamoDBAttribute
   @DynamoDBTypeConvertedJson(targetType = DepartamentoEntity.class)
-  private DepartamentoEntity departamento;
+  private DepartamentoEntity departamentoEntity;
 
-  public FuncionarioEntity(String funcionarioId, FuncionarioEntity funcionario) {
+  public EmployeeEntity(String funcionarioId, EmployeeEntity employeeEntity) {
     this.funcionarioId = funcionarioId;
-    this.nome = funcionario.getNome();
-    this.departamento = funcionario.getDepartamento();
+    this.nome = employeeEntity.getNome();
+    this.departamentoEntity = employeeEntity.getDepartamentoEntity();
   }
 }

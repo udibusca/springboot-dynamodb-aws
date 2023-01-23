@@ -7,11 +7,21 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class DynamoDbConfiguration {
+
+  @Value("${amazon.dynamodb.endpoint}")
+  private String amazonDynamoDBEndpoint;
+
+  @Value("${amazon.aws.accesskey}")
+  private String amazonAWSAccessKey;
+
+  @Value("${amazon.aws.secretkey}")
+  private String amazonAWSSecretKey;
 
   @Bean
   public DynamoDBMapper dynamoDBMapper() {
@@ -31,18 +41,16 @@ public class DynamoDbConfiguration {
    */
   private AwsClientBuilder.EndpointConfiguration endpointConfiguration() {
     return new AwsClientBuilder.EndpointConfiguration(
-        "http://localhost:8000/",
+        amazonDynamoDBEndpoint,
         Regions.SA_EAST_1.getName()
-
     );
   }
 
   private AWSStaticCredentialsProvider credentialsProvider() {
     return new AWSStaticCredentialsProvider(
         new BasicAWSCredentials(
-            "fakeId",
-            "fakeSecret"
-        )
+            amazonAWSAccessKey,
+            amazonAWSSecretKey)
     );
   }
 }

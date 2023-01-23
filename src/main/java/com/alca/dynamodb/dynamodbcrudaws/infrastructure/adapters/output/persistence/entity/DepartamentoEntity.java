@@ -17,5 +17,4 @@ public class DepartamentoEntity {
 
   @DynamoDBAttribute
   private String codigo;
-
 }

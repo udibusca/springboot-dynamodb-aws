@@ -1,7 +1,8 @@
+/*
 package com.alca.dynamodb.dynamodbcrudaws.infrastructure.adapters.input.rest;
 
-import com.alca.dynamodb.dynamodbcrudaws.infrastructure.adapters.output.persistence.entity.FuncionarioEntity;
-import com.alca.dynamodb.dynamodbcrudaws.repository.FuncionarioRepository;
+import com.alca.dynamodb.dynamodbcrudaws.infrastructure.adapters.output.persistence.entity.EmployeeEntity;
+import com.alca.dynamodb.dynamodbcrudaws.infrastructure.adapters.output.persistence.EmployeePersistenceAdapter;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -22,20 +23,15 @@ public class EmployeeRestAdapter {
 
   private final Logger LOG = LoggerFactory.getLogger(getClass());
 
-  private FuncionarioRepository funcionarioRepository;
+  private EmployeePersistenceAdapter funcionarioRepository;
 
   @GetMapping
-  public List<FuncionarioEntity> getFuncionarios() {
+  public List<EmployeeEntity> getFuncionarios() {
     return funcionarioRepository.listAll();
   }
 
-  @PostMapping
-  public FuncionarioEntity save(@RequestBody FuncionarioEntity funcionario) {
-    return funcionarioRepository.save(funcionario);
-  }
-
   @GetMapping("/{id}")
-  public FuncionarioEntity getFuncionarioById(@PathVariable("id") String funcionarioId) {
+  public EmployeeEntity getFuncionarioById(@PathVariable("id") String funcionarioId) {
     return funcionarioRepository.getFuncionarioById(funcionarioId);
   }
 
@@ -45,8 +41,9 @@ public class EmployeeRestAdapter {
   }
 
   @PutMapping("/{id}")
-  public String update(@PathVariable("id") String funcionarioId, @RequestBody FuncionarioEntity funcionario) {
+  public String update(@PathVariable("id") String funcionarioId, @RequestBody EmployeeEntity funcionario) {
     return funcionarioRepository.update(funcionarioId, funcionario);
   }
 
 }
+*/
