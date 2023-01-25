@@ -1,14 +1,19 @@
 package com.alca.dynamodb.dynamodbcrudaws.application.ports.output;
 
-import com.alca.dynamodb.dynamodbcrudaws.domain.model.Employee;
+import com.alca.dynamodb.dynamodbcrudaws.domain.model.Funcionario;
+import com.alca.dynamodb.dynamodbcrudaws.infrastructure.adapters.output.persistence.entity.FuncionarioEntity;
 import java.util.List;
 import java.util.Optional;
 
 public interface FuncionarioOutputPort {
 
-  Employee saveEmployee(Employee employee);
+  Funcionario salvar(Funcionario funcionario);
 
-  List<Employee> listAll();
+  List<Funcionario> listar();
 
-  Optional<Employee> getById(String funcionarioId);
+  Optional<Funcionario> buscarPorId(String funcionarioId);
+
+  Optional<Boolean> deletar(String funcionarioId);
+
+  Optional<Funcionario> atualizar(String funcionarioId, FuncionarioEntity funcionario);
 }

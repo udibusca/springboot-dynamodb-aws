@@ -1,39 +1,59 @@
 package com.alca.dynamodb.dynamodbcrudaws.domain.service;
 
-import com.alca.dynamodb.dynamodbcrudaws.application.ports.input.CreateFuncionarioUseCase;
-import com.alca.dynamodb.dynamodbcrudaws.application.ports.input.ListAllFuncionarioUseCase;
+import com.alca.dynamodb.dynamodbcrudaws.application.ports.input.AtualizarFuncionarioUseCase;
+import com.alca.dynamodb.dynamodbcrudaws.application.ports.input.BuscarFuncionarioPorIdUseCase;
+import com.alca.dynamodb.dynamodbcrudaws.application.ports.input.CriarFuncionarioUseCase;
+import com.alca.dynamodb.dynamodbcrudaws.application.ports.input.DeletarFuncionarioUseCase;
+import com.alca.dynamodb.dynamodbcrudaws.application.ports.input.ListarFuncionarioUseCase;
 import com.alca.dynamodb.dynamodbcrudaws.application.ports.output.FuncionarioOutputPort;
-import com.alca.dynamodb.dynamodbcrudaws.application.ports.output.EmployeeEventPublisher;
-import com.alca.dynamodb.dynamodbcrudaws.domain.event.EmployeeCreatedEvent;
-import com.alca.dynamodb.dynamodbcrudaws.domain.model.Employee;
+import com.alca.dynamodb.dynamodbcrudaws.application.ports.output.FuncionarioEventPublisher;
+import com.alca.dynamodb.dynamodbcrudaws.domain.event.FuncionarioCriadoEvent;
+import com.alca.dynamodb.dynamodbcrudaws.domain.exception.FuncionarioNotFound;
+import com.alca.dynamodb.dynamodbcrudaws.domain.model.Funcionario;
+import com.alca.dynamodb.dynamodbcrudaws.infrastructure.adapters.output.persistence.entity.FuncionarioEntity;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+@AllArgsConstructor
 @Component
-public class FuncionarioService implements CreateFuncionarioUseCase, ListAllFuncionarioUseCase {
+public class FuncionarioService implements CriarFuncionarioUseCase, ListarFuncionarioUseCase ,
+    BuscarFuncionarioPorIdUseCase , DeletarFuncionarioUseCase, AtualizarFuncionarioUseCase {
 
   private final Logger LOGG = LoggerFactory.getLogger(getClass());
   private final FuncionarioOutputPort funcionarioOutputPort;
-  private final EmployeeEventPublisher employeeEventPublisher;
+  private final FuncionarioEventPublisher funcionarioEventPublisher;
 
-  public FuncionarioService(FuncionarioOutputPort funcionarioOutputPort, EmployeeEventPublisher employeeEventPublisher) {
-    this.funcionarioOutputPort = funcionarioOutputPort;
-    this.employeeEventPublisher = employeeEventPublisher;
+  @Override
+  public Funcionario salvar(Funcionario funcionario) {
+    LOGG.trace("Entrando createFuncionario() com {}", funcionario);
+    funcionario = this.funcionarioOutputPort.salvar(funcionario);
+    this.funcionarioEventPublisher.publishEmployeeCreatedEvent(new FuncionarioCriadoEvent(funcionario.getFuncionarioId()));
+    return funcionario;
   }
 
   @Override
-  public Employee createFuncionario(Employee employee) {
-    LOGG.trace("Entrando createFuncionario() com {}", employee);
-    employee = this.funcionarioOutputPort.saveEmployee(employee);
-    this.employeeEventPublisher.publishEmployeeCreatedEvent(new EmployeeCreatedEvent(employee.getFuncionarioId()));
-    return employee;
-  }
-
-  @Override
-  public List<Employee> listAll() {
+  public List<Funcionario> listar() {
     LOGG.trace("Entrando listAll() com {}");
-    return funcionarioOutputPort.listAll();
+    return funcionarioOutputPort.listar();
+  }
+
+  @Override
+  public Funcionario atualizar(String funcionarioId, FuncionarioEntity funcionario) {
+    return null;
+  }
+
+  @Override
+  public Funcionario buscarPorId(String funcionarioId) {
+    return funcionarioOutputPort.buscarPorId(funcionarioId)
+        .orElseThrow(() -> new FuncionarioNotFound("Funcionario com o id: " +funcionarioId+ " não encontrado"));
+  }
+
+  @Override
+  public Boolean deletar(String funcionarioId) {
+    return funcionarioOutputPort.deletar(funcionarioId)
+        .orElseThrow(() -> new FuncionarioNotFound("Funcionario com o id: " +funcionarioId+ " não encontrado"));
   }
 }

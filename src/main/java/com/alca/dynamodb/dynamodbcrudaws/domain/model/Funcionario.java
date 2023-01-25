@@ -13,11 +13,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Employee {
+public class Funcionario {
 
   private String funcionarioId;
 
   private String nome;
 
-  private Departament departament;
+  private Departamento departamento;
 }

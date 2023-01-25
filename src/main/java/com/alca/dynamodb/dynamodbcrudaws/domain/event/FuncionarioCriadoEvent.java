@@ -12,13 +12,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmployeeCreatedEvent {
+public class FuncionarioCriadoEvent {
 
   private String funcionarioId;
 
   private LocalDateTime date;
 
-  public EmployeeCreatedEvent(String funcionarioId) {
+  public FuncionarioCriadoEvent(String funcionarioId) {
     this.funcionarioId = funcionarioId;
     this.date = LocalDateTime.now();
   }

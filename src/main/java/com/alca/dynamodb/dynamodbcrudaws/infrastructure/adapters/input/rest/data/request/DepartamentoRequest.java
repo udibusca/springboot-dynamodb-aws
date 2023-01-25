@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DepartamentRequest {
+public class DepartamentoRequest {
 
   @NotEmpty(message = "O codigo não pode estar vazio")
   private String codigo;

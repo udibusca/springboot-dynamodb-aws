@@ -15,7 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class EmployeeRequest {
+public class FuncionarioRequest {
 
   private String funcionarioId;
 
@@ -23,5 +23,5 @@ public class EmployeeRequest {
   private String nome;
 
   @JsonProperty("departamento")
-  private DepartamentRequest departamentRequest;
+  private DepartamentoRequest departamentoRequest;
 }
