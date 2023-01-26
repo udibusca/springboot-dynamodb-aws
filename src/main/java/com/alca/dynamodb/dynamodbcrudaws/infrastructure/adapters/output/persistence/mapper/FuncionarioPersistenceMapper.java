@@ -9,27 +9,33 @@ import org.springframework.stereotype.Component;
 @Component
 public class FuncionarioPersistenceMapper {
 
-  public FuncionarioEntity toEmployeeEntity(Funcionario funcionario) {
-    FuncionarioEntity entity = new FuncionarioEntity();
-    entity.setFuncionarioId(funcionario.getFuncionarioId());
-    entity.setNome(funcionario.getNome());
-    //entity.setDepartamentoEntity(employee.getDepartament());
-    return entity;
+  public FuncionarioEntity toFuncionarioEntity(Funcionario funcionario) {
+    if (funcionario == null)
+      return null;
+    return FuncionarioEntity.builder()
+        .funcionarioId(funcionario.getFuncionarioId())
+        .nome(funcionario.getNome())
+        .departamentoEntity(funcionario.getDepartamento() != null ?
+            DepartamentoPersistenceMapper.criarDepartamentoEntity(funcionario.getDepartamento()) :
+            null)
+        .build();
   }
 
-  public Funcionario toEmployee(FuncionarioEntity funcionarioEntity){
+  public Funcionario toFuncionario(FuncionarioEntity funcionarioEntity){
     if (funcionarioEntity == null)
       return null;
     return Funcionario.builder()
         .funcionarioId(funcionarioEntity.getFuncionarioId())
         .nome(funcionarioEntity.getNome())
-        //.departamento(funcionarioEntity.getDepartamentoEntity())
+        .departamento(funcionarioEntity.getDepartamentoEntity() != null ?
+            DepartamentoPersistenceMapper.criarDepartamento(funcionarioEntity.getDepartamentoEntity()) :
+            null)
         .build();
   }
 
   public List<Funcionario> toListEmployee(List<FuncionarioEntity> list) {
     return list.stream()
-        .map(employee -> toEmployee(employee))
+        .map(employee -> toFuncionario(employee))
         .collect(Collectors.toList());
   }
 }

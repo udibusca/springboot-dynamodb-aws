@@ -8,10 +8,11 @@ import com.alca.dynamodb.dynamodbcrudaws.application.ports.input.ListarFuncionar
 import com.alca.dynamodb.dynamodbcrudaws.application.ports.output.FuncionarioOutputPort;
 import com.alca.dynamodb.dynamodbcrudaws.application.ports.output.FuncionarioEventPublisher;
 import com.alca.dynamodb.dynamodbcrudaws.domain.event.FuncionarioCriadoEvent;
-import com.alca.dynamodb.dynamodbcrudaws.domain.exception.FuncionarioNotFound;
+import com.alca.dynamodb.dynamodbcrudaws.domain.exception.FuncionarioNotFoundException;
 import com.alca.dynamodb.dynamodbcrudaws.domain.model.Funcionario;
 import com.alca.dynamodb.dynamodbcrudaws.infrastructure.adapters.output.persistence.entity.FuncionarioEntity;
 import java.util.List;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +31,7 @@ public class FuncionarioService implements CriarFuncionarioUseCase, ListarFuncio
   public Funcionario salvar(Funcionario funcionario) {
     LOGG.trace("Entrando createFuncionario() com {}", funcionario);
     funcionario = this.funcionarioOutputPort.salvar(funcionario);
-    this.funcionarioEventPublisher.publishEmployeeCreatedEvent(new FuncionarioCriadoEvent(funcionario.getFuncionarioId()));
+    funcionarioEventPublisher.publishEmployeeCreatedEvent(new FuncionarioCriadoEvent(funcionario.getFuncionarioId()));
     return funcionario;
   }
 
@@ -41,19 +42,21 @@ public class FuncionarioService implements CriarFuncionarioUseCase, ListarFuncio
   }
 
   @Override
-  public Funcionario atualizar(String funcionarioId, FuncionarioEntity funcionario) {
-    return null;
+  public Funcionario atualizar(String funcionarioId, Funcionario funcionario) throws FuncionarioNotFoundException {
+    return funcionarioOutputPort.atualizar(funcionarioId, funcionario)
+        .orElseThrow(() -> new FuncionarioNotFoundException("Funcionario com o id: " +funcionarioId+ " não encontrado"));
   }
 
   @Override
-  public Funcionario buscarPorId(String funcionarioId) {
+  public Funcionario buscarPorId(String funcionarioId) throws FuncionarioNotFoundException {
     return funcionarioOutputPort.buscarPorId(funcionarioId)
-        .orElseThrow(() -> new FuncionarioNotFound("Funcionario com o id: " +funcionarioId+ " não encontrado"));
+        .orElseThrow(() -> new FuncionarioNotFoundException("Funcionario com o id: " +funcionarioId+ " não encontrado"));
   }
 
   @Override
-  public Boolean deletar(String funcionarioId) {
-    return funcionarioOutputPort.deletar(funcionarioId)
-        .orElseThrow(() -> new FuncionarioNotFound("Funcionario com o id: " +funcionarioId+ " não encontrado"));
+  public Boolean deletar(String funcionarioId) throws FuncionarioNotFoundException {
+    if (!funcionarioOutputPort.deletar(funcionarioId).get())
+      throw new FuncionarioNotFoundException("Funcionario com o id: " +funcionarioId+ " não encontrado");
+    return true;
   }
 }

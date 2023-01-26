@@ -5,9 +5,11 @@ import com.alca.dynamodb.dynamodbcrudaws.application.ports.input.BuscarFuncionar
 import com.alca.dynamodb.dynamodbcrudaws.application.ports.input.CriarFuncionarioUseCase;
 import com.alca.dynamodb.dynamodbcrudaws.application.ports.input.DeletarFuncionarioUseCase;
 import com.alca.dynamodb.dynamodbcrudaws.application.ports.input.ListarFuncionarioUseCase;
+import com.alca.dynamodb.dynamodbcrudaws.domain.exception.FuncionarioNotFoundException;
 import com.alca.dynamodb.dynamodbcrudaws.domain.model.Funcionario;
 import com.alca.dynamodb.dynamodbcrudaws.infrastructure.adapters.input.rest.data.request.FuncionarioRequest;
 import com.alca.dynamodb.dynamodbcrudaws.infrastructure.adapters.input.rest.data.response.FuncionarioResponse;
+import com.alca.dynamodb.dynamodbcrudaws.infrastructure.adapters.input.rest.data.response.Response;
 import com.alca.dynamodb.dynamodbcrudaws.infrastructure.adapters.input.rest.mapper.FuncionarioRestMapper;
 import com.alca.dynamodb.dynamodbcrudaws.infrastructure.adapters.output.persistence.entity.FuncionarioEntity;
 import java.util.List;
@@ -39,36 +41,57 @@ public class FuncionarioRestAdapter {
   private final FuncionarioRestMapper funcionarioRestMapper;
 
   @PostMapping
-  public ResponseEntity<FuncionarioResponse> criarFuncionario(@RequestBody @Valid FuncionarioRequest employeeCreateRequest) {
+  public ResponseEntity<Response<FuncionarioResponse>> criarFuncionario(@RequestBody @Valid FuncionarioRequest employeeCreateRequest) {
+    Response<FuncionarioResponse> response = new Response<>();
+
     Funcionario funcionario = funcionarioRestMapper.toFuncionario(employeeCreateRequest);
     funcionario = criarFuncionarioUseCase.salvar(funcionario);
-    return new ResponseEntity<>(funcionarioRestMapper.criarResponse(funcionario), HttpStatus.CREATED);
+
+    response.setData(funcionarioRestMapper.criarResponse(funcionario));
+    return new ResponseEntity<>(response, HttpStatus.CREATED);
   }
 
   @GetMapping
-  public ResponseEntity<List<FuncionarioResponse>> listarFuncionarios() {
+  public ResponseEntity<Response<List<FuncionarioResponse>>> listarFuncionarios() throws FuncionarioNotFoundException {
+    Response<List<FuncionarioResponse>> response = new Response<>();
+
     List<Funcionario> funcioanarios = allFuncionarioUseCase.listar();
     if (funcioanarios.isEmpty()) {
-      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+      throw new FuncionarioNotFoundException();
     }
-    return new ResponseEntity<>(funcionarioRestMapper.criarListaResponse(funcioanarios), HttpStatus.OK);
+
+    response.setData(funcionarioRestMapper.criarListaResponse(funcioanarios));
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<FuncionarioResponse> buscaFuncionarioPorId(@PathVariable("id") String funcionarioId) {
+  public ResponseEntity<Response<FuncionarioResponse>> buscaFuncionarioPorId(@PathVariable("id") String funcionarioId) throws FuncionarioNotFoundException {
+    Response<FuncionarioResponse> response = new Response<>();
     Funcionario funcionario = porIdUseCase.buscarPorId(funcionarioId);
-    return new ResponseEntity<>(funcionarioRestMapper.criarResponse(funcionario), HttpStatus.OK);
+
+    response.setData(funcionarioRestMapper.criarResponse(funcionario));
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<String> atualizarFuncionario(@PathVariable("id") String funcionarioId, @RequestBody FuncionarioEntity funcionario) {
-    atualizarFuncionarioUseCase.atualizar(funcionarioId, funcionario);
-    return new ResponseEntity<>(HttpStatus.OK);
+  public ResponseEntity<Response<FuncionarioResponse>> atualizarFuncionario(@PathVariable("id") String funcionarioId,
+      @RequestBody FuncionarioRequest funcionarioRequestonario) throws FuncionarioNotFoundException {
+    Response<FuncionarioResponse> response = new Response<>();
+    Funcionario funcionarioAtualiza = funcionarioRestMapper.toFuncionario(funcionarioRequestonario);
+
+    Funcionario funcionarioNovo = atualizarFuncionarioUseCase.atualizar(funcionarioId, funcionarioAtualiza);
+
+    response.setData(funcionarioRestMapper.criarResponse(funcionarioNovo));
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<String> deletarFuncionario(@PathVariable("id") String funcionarioId) {
+  public ResponseEntity<Response<String>> deletarFuncionario(@PathVariable("id") String funcionarioId) throws FuncionarioNotFoundException {
+    Response<String> response = new Response<>();
+
     deletarFuncionarioUseCase.deletar(funcionarioId);
-    return new ResponseEntity<>(HttpStatus.OK);
+
+    response.setData("Funcionario id=" + funcionarioId + " deletado com sucesso");
+    return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
   }
 }

@@ -1,71 +1,142 @@
 {
-	"variables": [],
 	"info": {
+		"_postman_id": "f1a968d3-6486-4d2d-b8a7-d75fc66739ca",
 		"name": "funcionario-crud",
-		"_postman_id": "84f66ff5-eea5-326a-015f-dabdb658fd8f",
-		"description": "",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "731024"
 	},
 	"item": [
 		{
-			"name": "Criar",
+			"name": "criarFuncionario",
 			"request": {
-				"url": "localhost:8080/v1/funcionario",
 				"method": "POST",
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
+						"value": "application/json"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"funcionarioId\": \"98512\",\r\n    \"nome\": \"Natasha Martins\",\r\n    \"departamento\": {\r\n        \"nome\": \"TI\",\r\n        \"codigo\": \"2\"\r\n    }\r\n}\r\n"
+					"raw": "{\r\n    \"nome\": \"Jovem para atualizar\",\r\n    \"departamento\": {\r\n        \"nome\": \"TI\",\r\n        \"codigo\": \"2\"\r\n    }\r\n}\r\n"
 				},
-				"description": ""
+				"url": {
+					"raw": "localhost:8080/v1/funcionario",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"funcionario"
+					]
+				}
 			},
 			"response": []
 		},
 		{
-			"name": "Listar",
+			"name": "listarFuncionarios",
 			"request": {
-				"url": "localhost:8080/v1/funcionario",
 				"method": "GET",
 				"header": [],
-				"body": {},
-				"description": ""
+				"url": {
+					"raw": "localhost:8080/v1/funcionario",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"funcionario"
+					]
+				}
 			},
 			"response": []
 		},
 		{
-			"name": "Atualizar",
+			"name": "buscaFuncionarioPorId",
 			"request": {
-				"url": "localhost:8080/v1/funcionario/45332",
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/v1/funcionario/:id",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"funcionario",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "80971acc-6e55-4627-b941-2fe1a3d26513"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "atualizarFuncionario",
+			"request": {
 				"method": "PUT",
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
+						"value": "application/json"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "    {\n        \"funcionarioId\": \"45332\",\n        \"nome\": \"Maria Silva Souza\",\n        \"departamento\": {\n            \"nome\": \"TI\",\n            \"codigo\": \"2\"\n        }\n    }"
+					"raw": "{\n    \"funcionarioId\": \"ff08a1d8-698d-42dd-94b3-5c5b76b41e55\",\n    \"nome\": \"Jovem para atualizar\",\n    \"departamento\": {\n        \"nome\": \"Financeiro\",\n        \"codigo\": \"3\"\n    }\n}"
 				},
-				"description": ""
+				"url": {
+					"raw": "localhost:8080/v1/funcionario/:id",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"funcionario",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "ff08a1d8-698d-42dd-94b3-5c5b76b41e55"
+						}
+					]
+				}
 			},
 			"response": []
 		},
 		{
-			"name": "Deletar",
+			"name": "deletarFuncionario",
 			"request": {
-				"url": "localhost:8080/v1/funcionario/45332",
 				"method": "DELETE",
 				"header": [],
-				"body": {},
-				"description": ""
+				"url": {
+					"raw": "localhost:8080/v1/funcionario/:id",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"funcionario",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "3ca3c206-067d-460a-ace4-9cd215faa06f"
+						}
+					]
+				}
 			},
 			"response": []
 		}
