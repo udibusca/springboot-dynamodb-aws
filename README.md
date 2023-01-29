@@ -1,7 +1,17 @@
 # Stack Utilizada
 
-* Java Spring Boot
+* Java 11
+* Spring Boot
 * Amazon DynamoDB em ambiente local
+* Docker
+
+###Features
+
+* Arquitetura hexagonal
+* Diferentes profiles
+* Hypermedia As The Engine Of Application State (HATEOAS)
+* Spring Exception Handling
+
 
 ### Implantar o DynamoDB localmente no computador
 
