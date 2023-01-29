@@ -1,5 +1,8 @@
 package com.alca.dynamodb.dynamodbcrudaws.infrastructure.adapters.input.rest;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import com.alca.dynamodb.dynamodbcrudaws.application.ports.input.AtualizarFuncionarioUseCase;
 import com.alca.dynamodb.dynamodbcrudaws.application.ports.input.BuscarFuncionarioPorIdUseCase;
 import com.alca.dynamodb.dynamodbcrudaws.application.ports.input.CriarFuncionarioUseCase;
@@ -11,15 +14,12 @@ import com.alca.dynamodb.dynamodbcrudaws.infrastructure.adapters.input.rest.data
 import com.alca.dynamodb.dynamodbcrudaws.infrastructure.adapters.input.rest.data.response.FuncionarioResponse;
 import com.alca.dynamodb.dynamodbcrudaws.infrastructure.adapters.input.rest.data.response.Response;
 import com.alca.dynamodb.dynamodbcrudaws.infrastructure.adapters.input.rest.mapper.FuncionarioRestMapper;
-import com.alca.dynamodb.dynamodbcrudaws.infrastructure.adapters.output.persistence.entity.FuncionarioEntity;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
 import javax.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Log4j2
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/v1/funcionario")
@@ -53,7 +54,7 @@ public class FuncionarioRestAdapter {
 
     FuncionarioResponse funcionarioResponse = funcionarioRestMapper.criarResponse(newFuncionario);
 
-    createSelfLink(newFuncionario, funcionarioResponse);
+    createSelfLinkHateoas(newFuncionario, funcionarioResponse);
 
     response.setData(funcionarioResponse);
     return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -68,8 +69,17 @@ public class FuncionarioRestAdapter {
     if (funcioanarios.isEmpty()) {
       throw new FuncionarioNotFoundException();
     }
+    List<FuncionarioResponse> funcionarioResponse = funcionarioRestMapper.criarListaResponse(funcioanarios);
 
-    response.setData(funcionarioRestMapper.criarListaResponse(funcioanarios));
+    funcionarioResponse.stream().forEach(dto -> {
+      try {
+        createSelfLinkHateoasCollections(dto);
+      } catch (FuncionarioNotFoundException e) {
+        log.error("Não econtrado registros de funcionarios = {}");
+      }
+    });
+
+    response.setData(funcionarioResponse);
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
@@ -79,12 +89,16 @@ public class FuncionarioRestAdapter {
     Response<FuncionarioResponse> response = new Response<>();
     Funcionario funcionario = porIdUseCase.buscarPorId(funcionarioId);
 
-    response.setData(funcionarioRestMapper.criarResponse(funcionario));
+    FuncionarioResponse funcionarioResponse = funcionarioRestMapper.criarResponse(funcionario);
+
+    createSelfLinkHateoas(funcionario, funcionarioResponse);
+
+    response.setData(funcionarioResponse);
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
   @PutMapping("/{id}")
-  @ApiOperation(value = "Rota para deletar um funcionario por id")
+  @ApiOperation(value = "Rota para atualizar um funcionario por id")
   public ResponseEntity<Response<FuncionarioResponse>> atualizarFuncionario(@PathVariable("id") String funcionarioId,
       @RequestBody FuncionarioRequest funcionarioRequestonario) throws FuncionarioNotFoundException {
     Response<FuncionarioResponse> response = new Response<>();
@@ -92,11 +106,16 @@ public class FuncionarioRestAdapter {
 
     Funcionario funcionarioNovo = atualizarFuncionarioUseCase.atualizar(funcionarioId, funcionarioAtualiza);
 
-    response.setData(funcionarioRestMapper.criarResponse(funcionarioNovo));
+    FuncionarioResponse funcionarioResponse = funcionarioRestMapper.criarResponse(funcionarioNovo);
+
+    createSelfLinkHateoas(funcionarioNovo, funcionarioResponse);
+
+    response.setData(funcionarioResponse);
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
   @DeleteMapping("/{id}")
+  @ApiOperation(value = "Rota para deletar um funcionario por id")
   public ResponseEntity<Response<String>> deletarFuncionario(@PathVariable("id") String funcionarioId) throws FuncionarioNotFoundException {
     Response<String> response = new Response<>();
 
@@ -109,8 +128,18 @@ public class FuncionarioRestAdapter {
   /**
    * Método que cria um self link para o objeto Funcionario
    */
-  private void createSelfLink(Funcionario funcionario, FuncionarioResponse funcionarioResponse) {
-    Link selfLink = WebMvcLinkBuilder.linkTo(FuncionarioRestAdapter.class).slash(funcionario.getFuncionarioId()).withSelfRel();
+  private void createSelfLinkHateoas(Funcionario funcionario, FuncionarioResponse funcionarioResponse) {
+    Link selfLink = linkTo(FuncionarioRestAdapter.class).slash(funcionario.getFuncionarioId()).withSelfRel();
+    funcionarioResponse.add(selfLink);
+  }
+
+  /**
+   * Método que cria um self link em uma coleção de Funcionarios
+   */
+  private void createSelfLinkHateoasCollections(final FuncionarioResponse funcionarioResponse)
+      throws FuncionarioNotFoundException {
+    Link selfLink = linkTo(methodOn(FuncionarioRestAdapter.class).buscaFuncionarioPorId(funcionarioResponse.getFuncionarioId()))
+        .withSelfRel().expand();
     funcionarioResponse.add(selfLink);
   }
 

@@ -3,6 +3,7 @@ package com.alca.dynamodb.dynamodbcrudaws.infrastructure.adapters.input.rest.dat
 import com.alca.dynamodb.dynamodbcrudaws.domain.model.Departamento;
 import com.alca.dynamodb.dynamodbcrudaws.domain.model.Funcionario;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import org.springframework.hateoas.RepresentationModel;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonPropertyOrder({"id_funcionario", "nome_funcionario","departamento"})
 public class FuncionarioResponse extends RepresentationModel<FuncionarioResponse> {
 
   @JsonProperty(value = "id_funcionario")
@@ -23,5 +25,6 @@ public class FuncionarioResponse extends RepresentationModel<FuncionarioResponse
   @JsonProperty(value = "nome_funcionario")
   private String nome;
 
+  @JsonProperty(value = "departamento")
   private Departamento departamento;
 }
