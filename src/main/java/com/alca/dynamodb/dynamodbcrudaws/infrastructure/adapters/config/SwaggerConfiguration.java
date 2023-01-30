@@ -31,7 +31,8 @@ public class SwaggerConfiguration {
   public Docket api() {
     return new Docket(DocumentationType.SWAGGER_2).select()
         .apis(RequestHandlerSelectors.basePackage("com.alca.dynamodb.dynamodbcrudaws.infrastructure.adapters.input.rest"))
-        .paths(PathSelectors.any()).build()
+        .paths(PathSelectors.any())
+        .build()
         .apiInfo(apiInfo());
   }
 
@@ -39,8 +40,12 @@ public class SwaggerConfiguration {
    * Método que configura as informações sobre a API.
    */
   private ApiInfo apiInfo() {
-    return new ApiInfoBuilder().title("Funcionarios API")
-        .description("Funcionarios API - Endpoint's documentation").version(releaseVersion.concat("_").concat(apiVersion))
+    return new ApiInfoBuilder()
+        .title("Funcionarios API")
+        .description("Funcionarios API - Endpoint's documentation")
+        .version(releaseVersion.concat("_").concat(apiVersion))
+        .license("Apache License Version 2.0")
+        .licenseUrl("https://www.apache.org/licenses/LICENSE-2.0")
         .build();
   }
 

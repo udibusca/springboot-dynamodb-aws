@@ -5,12 +5,13 @@
 * Amazon DynamoDB em ambiente local
 * Docker
 
-###Features
+### Features
 
 * Arquitetura hexagonal
 * Diferentes profiles
 * Hypermedia As The Engine Of Application State (HATEOAS)
 * Spring Exception Handling
+* Swagger (http://base-url/swagger-ui/)
 
 
 ### Implantar o DynamoDB localmente no computador
